@@ -52,19 +52,21 @@ public class TokenService {
      * @return
      */
     public String create(String email) {
-        MemberInfo memberInfo = (MemberInfo)infoService.loadUserByUsername(email);
+        MemberInfo memberInfo = (MemberInfo)infoService.loadUserByUsername(email); // 이메일로 접근가능하게!
 
-        String authorities = memberInfo.getAuthorities().stream().map(a -> a.getAuthority()).collect(Collectors.joining("||"));
-        int validTime = properties.getValidTime() * 1000;
-        Date date = new Date((new Date()).getTime() + validTime); // 15분 뒤의 시간(만료 시간)
+        String authorities = memberInfo.getAuthorities().stream().map(a -> a.getAuthority()).collect(Collectors.joining("||")); // 문자열로 권한명칭을 다 넣어주고 토큰에 실어서 보냄
+        int validTime = properties.getValidTime() * 1000; // 1000곱한건 날짜를 계산할려고 넣은거
+        Date date = new Date((new Date()).getTime() + validTime); // 15분 뒤의 시간(만료 시간) // 겟타임은 에포크타임
+        // 15분뒤에 예외가 발생할거임
 
         return Jwts.builder()
                 .setSubject(memberInfo.getEmail())
                 .claim("authorities", authorities)
-                .signWith(key, SignatureAlgorithm.HS512)
+                .signWith(key, SignatureAlgorithm.HS512) // 사인키를 만드는 구문 / HMAC방식임 == HS512
                 .setExpiration(date)
                 .compact();
-    }
+    } // 토큰을 만드는 기능임
+    // 토큰을 실어나를때 쿠키에도 넣어줘야함
 
     /**
      * 토큰으로 인증 처리(로그인 처리)
@@ -75,12 +77,14 @@ public class TokenService {
      * @return
      */
     public Authentication authenticate(String token) {
+    // 토큰이 넘어왔음 / 토큰을 다시 원래형태로 바꿔줘야함/parser를 써야함
+        // 토큰만료시 갱신하는 방식으로 만들꺼
 
         // 토큰 유효성 검사
         validate(token);
 
         Claims claims = Jwts.parser()
-                .setSigningKey(key)
+                .setSigningKey(key) // 위변조가 있는지 검증해야함 / 키값!
                 .build()
                 .parseClaimsJws(token)
                 .getPayload();
