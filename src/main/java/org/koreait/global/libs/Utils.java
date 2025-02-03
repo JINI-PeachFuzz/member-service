@@ -59,7 +59,7 @@ public class Utils {
      */
     public Map<String, List<String>> getErrorMessages(Errors errors) {
         ResourceBundleMessageSource ms = (ResourceBundleMessageSource) messageSource;
-
+        // 메세지는 항상필요하니까 false그건 지웠음
 
         // 필드별 에러코드 - getFieldErrors()
         // Collectors.toMap
