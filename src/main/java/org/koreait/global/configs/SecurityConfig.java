@@ -51,6 +51,8 @@ public class SecurityConfig {
                     c.requestMatchers(
                                     "/join", // /api/v1/member/join
                                     "/login",
+                                    "/find/**",
+                                    "/change/**",
                                     "/apidocs.html",
                                     "/swagger-ui*/**",
                                     "/api-docs/**").permitAll()

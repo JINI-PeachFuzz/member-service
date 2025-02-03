@@ -1,3 +1,4 @@
+
 package org.koreait.member.controllers;
 
 import jakarta.validation.constraints.AssertTrue;
@@ -17,6 +18,9 @@ public class RequestJoin {
 
     @NotBlank
     private String name; // 회원명
+
+    @NotBlank
+    private String mobile; // 휴대전화번호
 
     @NotBlank
     @Size(min=8)

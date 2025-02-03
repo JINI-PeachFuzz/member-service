@@ -86,4 +86,31 @@ public class MemberController {
 
         return new JSONData(memberInfo.getMember());
     }
+
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping("/find/password")
+    public void findPassword(@Valid @RequestBody RequestFindPassword form, Errors errors) {
+
+        if (errors.hasErrors()) {
+            throw new BadRequestException(utils.getErrorMessages(errors));
+        }
+
+        updateService.issueToken(form);
+    }
+
+    /**
+     * 비밀번호 변경
+     * @param form
+     * @param errors
+     */
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PatchMapping("/change/password")
+    public void changePassword(@Valid @RequestBody RequestChangePassword form, Errors errors) {
+        if (errors.hasErrors()) {
+            throw new BadRequestException(utils.getErrorMessages(errors));
+        }
+
+        updateService.changePassword(form);
+    }
 }
